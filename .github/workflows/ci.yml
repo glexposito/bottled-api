@@ -26,7 +26,7 @@ jobs:
       with:
         files: '/home/runner/work/bottled-api/bottled-api/src/Bottled.Api/appsettings.Staging.json'
       env:
-        ConnectionStrings.MySqlConnectionString: ${{ secrets.MYSQL_CONNECTION_STRING_STAGING7 }}
+        ConnectionStrings.MySqlConnectionString: ${{ secrets.MYSQL_CONNECTION_STRING_STAGING }}
 
     - name: See file
       run: cat /home/runner/work/bottled-api/bottled-api/src/Bottled.Api/appsettings.Staging.json
