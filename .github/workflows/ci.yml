@@ -35,4 +35,4 @@ jobs:
       run: dotnet build --configuration Debug --no-restore
 
     - name: Run tests
-      run: ASPNETCORE_ENVIRONMENT=Hola && dotnet test --no-restore --verbosity normal
+      run: dotnet test --environment ASPNETCORE_ENVIRONMENT=Staging
