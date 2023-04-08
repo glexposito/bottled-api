@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '7.0.x' ]
+    name: Build & test ${{ dotnet-version }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET SDK ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v3
+      with:
+        node-version: ${{ matrix.dotnet-version }}
+    
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: App Settings Variable Substitution
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: '${{env.DOTNET_ROOT}}/myapp/appsettings.Staging.json'
+      env:
+        ConnectionStrings.MySqlConnectionString: ${{ secrets.MYSQL_CONNECTION_STRING_STAGING }}
+
+    - name: Build
+      run: dotnet build --configuration Staging --no-restore
+
+    - name: Run tests
+      run: dotnet test --no-restore --verbosity normal
