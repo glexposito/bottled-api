@@ -25,8 +25,8 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Staging --no-restore
-      
+      run: dotnet build --configuration Debug --no-restore
+
     - name: App Settings Variable Substitution
       uses: microsoft/variable-substitution@v1
       with:
