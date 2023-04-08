@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bottled.Api", "Bottled.Api\Bottled.Api.csproj", "{E5D25D33-54F6-4F72-9468-4469ACE0E251}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bottled.Api", "src\Bottled.Api\Bottled.Api.csproj", "{E5D25D33-54F6-4F72-9468-4469ACE0E251}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bottled.Tests", "..\tests\Bottled.Tests\Bottled.Tests.csproj", "{A9DA16B7-EBB1-4612-AED7-980C6B88493E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bottled.Tests", "tests\Bottled.Tests\Bottled.Tests.csproj", "{A9DA16B7-EBB1-4612-AED7-980C6B88493E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
