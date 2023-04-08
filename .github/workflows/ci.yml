@@ -27,9 +27,6 @@ jobs:
         files: '/home/runner/work/bottled-api/bottled-api/src/Bottled.Api/appsettings.Staging.json'
       env:
         ConnectionStrings.MySqlConnectionString: ${{ secrets.MYSQL_CONNECTION_STRING_STAGING }}
-
-    - name: See file
-      run: cat /home/runner/work/bottled-api/bottled-api/src/Bottled.Api/appsettings.Staging.json
     
     - name: Install dependencies
       run: dotnet restore
@@ -38,4 +35,4 @@ jobs:
       run: dotnet build --configuration Debug --no-restore
 
     - name: Run tests
-      run: ASPNETCORE_ENVIRONMENT=Staging && dotnet test --no-restore --verbosity normal
+      run: ASPNETCORE_ENVIRONMENT=Hola && dotnet test --no-restore --verbosity normal
