@@ -1,5 +1,6 @@
 using Bottled.Api.Dtos;
 using Bottled.Api.Infrastructure.Data;
+using Bottled.Api.Infrastructure.Filters;
 using Bottled.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore.Extensions;
@@ -29,7 +30,6 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<BottledContext>();
 
     dbContext.Database.Migrate();
-
 }
 
 // Configure the HTTP request pipeline.
@@ -65,7 +65,8 @@ app.MapGet("/", async (BottledContext context) =>
 })
 .WithName("GetRandomMessage")
 .WithSummary("Break a bottle and read the message")
-.WithOpenApi();
+.WithOpenApi()
+.AddEndpointFilter<AddDummyHeaderFilter>();
 
 app.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
 {
@@ -82,7 +83,8 @@ app.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
 })
 .WithName("WriteMessage")
 .WithSummary("Write a message and dispatch into the ocean")
-.WithOpenApi();
+.WithOpenApi()
+.AddEndpointFilter<AddDummyHeaderFilter>();
 
 app.Run();
 
