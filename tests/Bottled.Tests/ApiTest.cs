@@ -38,8 +38,8 @@ public class ApiTest : IntegrationTestBase
         var messageDto = JsonConvert.DeserializeObject<MessageDto>(jsonString);
 
         response.Should().HaveStatusCode(HttpStatusCode.OK);
-        messageDto.Author.Should().Be(message.Author);
-        messageDto.Content.Should().Be(message.Content);
+        messageDto?.Author.Should().Be(message.Author);
+        messageDto?.Content.Should().Be(message.Content);
     }
 
     [Fact]
