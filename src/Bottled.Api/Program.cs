@@ -39,7 +39,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/", async (BottledContext context) =>
+var minApi = app.MapGroup("/api")
+    .AddEndpointFilter<AddApiKeyAuthFilter>()
+    .WithOpenApi();
+
+minApi.MapGet("/", async (BottledContext context) =>
 {
     var rand = new Random();
 
@@ -65,12 +69,11 @@ app.MapGet("/", async (BottledContext context) =>
 })
 .WithName("GetRandomMessage")
 .WithSummary("Break a bottle and read the message")
-.WithOpenApi()
-.AddEndpointFilter<AddApiKeyAuthFilter>();
+.Produces(401)
+.Produces<MessageDto>();
 
-app.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
+minApi.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
 {
-
     var message = await context.AddAsync(new Message()
     {
         Author = messageDto.Author,
@@ -83,8 +86,9 @@ app.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
 })
 .WithName("WriteMessage")
 .WithSummary("Write a message and dispatch into the ocean")
-.WithOpenApi()
-.AddEndpointFilter<AddApiKeyAuthFilter>();
+.Produces(400)
+.Produces(401)
+.Produces<int>();
 
 app.Run();
 
