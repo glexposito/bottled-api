@@ -21,6 +21,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
+      "httpPort": 32768,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true
     }
