@@ -66,7 +66,7 @@ app.MapGet("/", async (BottledContext context) =>
 .WithName("GetRandomMessage")
 .WithSummary("Break a bottle and read the message")
 .WithOpenApi()
-.AddEndpointFilter<AddDummyHeaderFilter>();
+.AddEndpointFilter<AddApiKeyAuthFilter>();
 
 app.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
 {
@@ -84,7 +84,7 @@ app.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
 .WithName("WriteMessage")
 .WithSummary("Write a message and dispatch into the ocean")
 .WithOpenApi()
-.AddEndpointFilter<AddDummyHeaderFilter>();
+.AddEndpointFilter<AddApiKeyAuthFilter>();
 
 app.Run();
 
