@@ -2,6 +2,7 @@ using Bottled.Api.Dtos;
 using Bottled.Api.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using MySqlX.XDevAPI;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Json;
@@ -19,6 +20,7 @@ public class ApiTest : IntegrationTestBase
     [Fact]
     public async Task GetRandomMessage_WhenNoMessage_ShouldReturn_204NoContent()
     {
+        SetRequestHeader();
         var response = await Client.GetAsync("/");
 
         response.Should().HaveStatusCode(HttpStatusCode.NoContent);
@@ -32,6 +34,7 @@ public class ApiTest : IntegrationTestBase
         await DbContext.AddAsync(message);
         await DbContext.SaveChangesAsync();
 
+        SetRequestHeader();
         var response = await Client.GetAsync("/");
 
         var jsonString = await response.Content.ReadAsStringAsync();
@@ -51,6 +54,7 @@ public class ApiTest : IntegrationTestBase
             Content = "I'll be back."
         };
 
+        SetRequestHeader();
         var response = await Client.PostAsJsonAsync("/write", messageDto);
 
         response.Should().HaveStatusCode(HttpStatusCode.OK);
@@ -63,5 +67,10 @@ public class ApiTest : IntegrationTestBase
 
         message.Author.Should().Be(messageDto.Author);
         message.Content.Should().Be(messageDto.Content);
+    }
+
+    private void SetRequestHeader()
+    {
+        Client.DefaultRequestHeaders.Add("X-API-Key", "Hadoken");
     }
 }
