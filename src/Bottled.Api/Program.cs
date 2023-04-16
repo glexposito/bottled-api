@@ -2,13 +2,13 @@ using Bottled.Api.Dtos;
 using Bottled.Api.Infrastructure.Data;
 using Bottled.Api.Infrastructure.Filters;
 using Bottled.Api.Models;
+using Bottled.Api.Validators;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -22,6 +22,8 @@ if (_connectionString != null)
     });
 }
 
+builder.Services.AddScoped<IValidator<MessageDto>, MessageDtoValidator>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -32,7 +34,6 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -72,8 +73,15 @@ minApi.MapGet("/", async (BottledContext context) =>
 .Produces(401)
 .Produces<MessageDto>();
 
-minApi.MapPost("/write", async (MessageDto messageDto, BottledContext context) =>
+minApi.MapPost("/write", async (IValidator<MessageDto> validator, BottledContext context, MessageDto messageDto) =>
 {
+    var validationResult = await validator.ValidateAsync(messageDto);
+    
+    if (!validationResult.IsValid)
+    {
+        return Results.ValidationProblem(validationResult.ToDictionary());
+    }
+
     var message = await context.AddAsync(new Message()
     {
         Author = messageDto.Author,
