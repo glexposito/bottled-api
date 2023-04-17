@@ -57,7 +57,7 @@ minApi.MapGet("/", async (BottledContext context) =>
 
     if (randomMessage == null)
     {
-        return Results.NoContent();
+        return Results.NotFound();
     }
 
     var messageDto = new MessageDto()
@@ -71,6 +71,7 @@ minApi.MapGet("/", async (BottledContext context) =>
 .WithName("GetRandomMessage")
 .WithSummary("Break a bottle and read the message")
 .Produces(401)
+.Produces(404)
 .Produces<MessageDto>();
 
 minApi.MapPost("/write", async (IValidator<MessageDto> validator, BottledContext context, MessageDto messageDto) =>
