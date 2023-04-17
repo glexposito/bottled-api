@@ -17,12 +17,12 @@ public class ApiTest : IntegrationTestBase
     }
 
     [Fact]
-    public async Task GetRandomMessage_WhenNoMessage_ShouldReturn_204NoContent()
+    public async Task GetRandomMessage_WhenNoMessage_ShouldReturn_404NotFound()
     {
         SetRequestHeader();
         var response = await Client.GetAsync("/api/");
 
-        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
