@@ -5,7 +5,6 @@ using Bottled.Api.Models;
 using Bottled.Api.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +15,12 @@ var _connectionString = builder.Configuration.GetConnectionString("MySqlConnecti
 
 if (_connectionString != null)
 {
-    builder.Services.AddEntityFrameworkMySQL().AddDbContext<BottledContext>(options =>
-    {
-        options.UseMySQL(_connectionString);
-    });
+    builder.Services.AddDbContextPool<BottledContext>(options => options
+        .UseMySql(
+            _connectionString, 
+            new MySqlServerVersion(ServerVersion.AutoDetect(_connectionString))
+        )
+    );
 }
 
 builder.Services.AddScoped<IValidator<MessageDto>, MessageDtoValidator>();
