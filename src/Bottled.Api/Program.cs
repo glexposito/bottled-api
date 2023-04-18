@@ -45,7 +45,23 @@ var minApi = app.MapGroup("/api")
     .AddEndpointFilter<AddApiKeyAuthFilter>()
     .WithOpenApi();
 
-minApi.MapGet("/", async (BottledContext context) =>
+minApi.MapGet("/", GetRandomMessage)
+.WithName("GetRandomMessage")
+.WithSummary("Break a bottle and read the message")
+.Produces(401)
+.Produces(404)
+.Produces<MessageDto>();
+
+minApi.MapPost("/write", WriteMessage)
+.WithName("WriteMessage")
+.WithSummary("Write a message and dispatch into the ocean")
+.Produces(400)
+.Produces(401)
+.Produces<int>();
+
+app.Run();
+
+static async Task<IResult> GetRandomMessage(BottledContext context)
 {
     var rand = new Random();
 
@@ -58,7 +74,7 @@ minApi.MapGet("/", async (BottledContext context) =>
 
     if (randomMessage == null)
     {
-        return Results.NotFound();
+        return TypedResults.NotFound();
     }
 
     var messageDto = new MessageDto()
@@ -67,21 +83,16 @@ minApi.MapGet("/", async (BottledContext context) =>
         Content = randomMessage?.Content
     };
 
-    return Results.Ok(messageDto);
-})
-.WithName("GetRandomMessage")
-.WithSummary("Break a bottle and read the message")
-.Produces(401)
-.Produces(404)
-.Produces<MessageDto>();
+    return TypedResults.Ok(messageDto);
+}
 
-minApi.MapPost("/write", async (IValidator<MessageDto> validator, BottledContext context, MessageDto messageDto) =>
+static async Task<IResult> WriteMessage(IValidator<MessageDto> validator, BottledContext context, MessageDto messageDto)
 {
     var validationResult = await validator.ValidateAsync(messageDto);
-    
+
     if (!validationResult.IsValid)
     {
-        return Results.ValidationProblem(validationResult.ToDictionary());
+        return TypedResults.ValidationProblem(validationResult.ToDictionary());
     }
 
     var message = await context.AddAsync(new Message()
@@ -92,14 +103,7 @@ minApi.MapPost("/write", async (IValidator<MessageDto> validator, BottledContext
 
     await context.SaveChangesAsync();
 
-    return Results.Ok(message.Entity.Id);
-})
-.WithName("WriteMessage")
-.WithSummary("Write a message and dispatch into the ocean")
-.Produces(400)
-.Produces(401)
-.Produces<int>();
-
-app.Run();
+    return TypedResults.Ok(message.Entity.Id);
+}
 
 public partial class Program { }
