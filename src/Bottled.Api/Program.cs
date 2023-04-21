@@ -11,14 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var _connectionString = builder.Configuration.GetConnectionString("MySqlConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("MySqlConnectionString");
 
-if (_connectionString != null)
+if (connectionString != null)
 {
     builder.Services.AddDbContextPool<BottledContext>(options => options
         .UseMySql(
-            _connectionString, 
-            new MySqlServerVersion(ServerVersion.AutoDetect(_connectionString))
+            connectionString,
+            new MySqlServerVersion(ServerVersion.AutoDetect(connectionString))
         )
     );
 }
@@ -46,18 +46,18 @@ var minApi = app.MapGroup("/api")
     .WithOpenApi();
 
 minApi.MapGet("/", GetRandomMessage)
-.WithName("GetRandomMessage")
-.WithSummary("Break a bottle and read the message")
-.Produces(401)
-.Produces(404)
-.Produces<MessageDto>();
+    .WithName("GetRandomMessage")
+    .WithSummary("Break a bottle and read the message")
+    .Produces(401)
+    .Produces(404)
+    .Produces<MessageDto>();
 
 minApi.MapPost("/write", WriteMessage)
-.WithName("WriteMessage")
-.WithSummary("Write a message and dispatch into the ocean")
-.Produces(400)
-.Produces(401)
-.Produces<int>();
+    .WithName("WriteMessage")
+    .WithSummary("Write a message and dispatch into the ocean")
+    .Produces(400)
+    .Produces(401)
+    .Produces<int>();
 
 app.Run();
 
@@ -65,9 +65,10 @@ static async Task<IResult> GetRandomMessage(BottledContext context)
 {
     var rand = new Random();
 
-    int skipper = rand.Next(0, context.Messages.Count());
+    var skipper = rand.Next(0, context.Messages.Count());
 
     var randomMessage = await context.Messages
+        .OrderBy(x => x.Id)
         .Skip(skipper)
         .Take(1)
         .SingleOrDefaultAsync();
@@ -79,8 +80,8 @@ static async Task<IResult> GetRandomMessage(BottledContext context)
 
     var messageDto = new MessageDto()
     {
-        Author = randomMessage?.Author,
-        Content = randomMessage?.Content
+        Author = randomMessage.Author,
+        Content = randomMessage.Content
     };
 
     return TypedResults.Ok(messageDto);
@@ -106,4 +107,6 @@ static async Task<IResult> WriteMessage(IValidator<MessageDto> validator, Bottle
     return TypedResults.Ok(message.Entity.Id);
 }
 
-public partial class Program { }
+public abstract partial class Program
+{
+}

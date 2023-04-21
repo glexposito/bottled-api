@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace Bottled.Tests;
-public class AddApiKeyAuthFilterTest
+public class AddApiKeyAuthFilterTests
 {
     [Fact]
     public async Task AddApiKeyAuthFilter_WhenNoApiKey_ShouldReturn401Unauthorized()
@@ -16,7 +16,7 @@ public class AddApiKeyAuthFilterTest
         app.MapGet("/", () => "Hello World!")
             .AddEndpointFilter<AddApiKeyAuthFilter>();
 
-        var baseUrl = "http://localhost:3045";
+        const string baseUrl = "http://localhost:3045";
 
         _ = Task.Factory.StartNew(() => app.Run(baseUrl));
 
@@ -37,7 +37,7 @@ public class AddApiKeyAuthFilterTest
         app.MapGet("/", () => "Hello World!")
             .AddEndpointFilter<AddApiKeyAuthFilter>();
 
-        var baseUrl = "http://localhost:3045";
+        const string baseUrl = "http://localhost:3045";
 
         _ = Task.Factory.StartNew(() => app.Run(baseUrl));
 
@@ -59,7 +59,7 @@ public class AddApiKeyAuthFilterTest
         app.MapGet("/", () => "Hello World!")
             .AddEndpointFilter<AddApiKeyAuthFilter>();
 
-        var baseUrl = "http://localhost:3045";
+        const string baseUrl = "http://localhost:3045";
 
         _ = Task.Factory.StartNew(() => app.Run(baseUrl));
 
