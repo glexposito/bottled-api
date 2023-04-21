@@ -8,9 +8,9 @@ using System.Net.Http.Json;
 
 namespace Bottled.Tests;
 
-public class ApiTest : IntegrationTestBase
+public class ApiTests : IntegrationTestBase
 {
-    public ApiTest(WebApplicationFactory<Program> factory) : base(factory)
+    public ApiTests(WebApplicationFactory<Program> factory) : base(factory)
     {
         DbContext.Messages.RemoveRange(DbContext.Messages);
         DbContext.SaveChanges();
