@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
-
-namespace Bottled.Api.Infrastructure.Filters;
+﻿namespace Bottled.Api.Infrastructure.Filters;
 
 public class AddApiKeyAuthFilter : IEndpointFilter
 {
