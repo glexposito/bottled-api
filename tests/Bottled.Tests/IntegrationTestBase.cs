@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace Bottled.Tests;
+
 public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory<Program>>
 {
     protected readonly HttpClient Client;
     protected readonly BottledContext DbContext;
 
-    public IntegrationTestBase(WebApplicationFactory<Program> factory)
+    protected IntegrationTestBase(WebApplicationFactory<Program> factory)
     {
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
