@@ -11,45 +11,41 @@ namespace Bottled.Tests;
 
 public class ValidationFilterTests
 {
-    private readonly WebApplication _app;
     private const string BaseUrl = "http://localhost:3046";
+    private readonly HttpClient _client;
     
     public ValidationFilterTests()
     {
         var builder = WebApplication.CreateBuilder();
         builder.Services.AddScoped<IValidator<Person>, PersonValidator>();
-
-        _app = builder.Build();
+        builder.Services.AddHttpClient();
+        var app = builder.Build();
+        
+        var factory = builder.Services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>();
+        _client = factory.CreateClient();
+        _client.BaseAddress = new Uri(BaseUrl);
+        
+        app.MapPost("/", (Person person) => Results.Ok(person))
+            .AddEndpointFilter<ValidationFilter<Person>>();
+        
+        _ = app.RunAsync(BaseUrl);
     }
     
     [Fact]
-    public async void ValidationFilter_WhenValidationErrors_ShouldReturn400BadRequest()
+    public async void ValidationFilter_WhenPersonNameEmpty_And_ValidationErrors_ShouldReturn400BadRequest()
     {
-        _app.MapPost("/", (Person person) => Results.Ok())
-            .AddEndpointFilter<ValidationFilter<Person>>();
+        var response = await _client.PostAsJsonAsync("/", new Person());
         
-        _ = _app.RunAsync(BaseUrl);
-
-        using var client = new HttpClient();
-        client.BaseAddress = new Uri(BaseUrl);
-
-        var response = await client.PostAsJsonAsync("/", new Person());
-
+        var jsonString = await response.Content.ReadAsStringAsync();
+        
+        jsonString.Should().Contain("One or more validation errors occurred.");
         response.Should().HaveStatusCode(HttpStatusCode.BadRequest);
     }
     
     [Fact]
-    public async void ValidationFilter_WhenNoValidationErrors_ShouldReturn200OK()
+    public async void ValidationFilter_WhenPersonNameFilled_And_NoValidationErrors_ShouldReturn200OK()
     {
-        _app.MapPost("/", (Person person) => Results.Ok())
-            .AddEndpointFilter<ValidationFilter<Person>>();
-        
-        _ = _app.RunAsync(BaseUrl);
-
-        using var client = new HttpClient();
-        client.BaseAddress = new Uri(BaseUrl);
-
-        var response = await client.PostAsJsonAsync("/", new Person() {Name = "Ryu"});
+        var response = await _client.PostAsJsonAsync("/", new Person() {Name = "Ryu"});
 
         response.Should().HaveStatusCode(HttpStatusCode.OK);
     }
