@@ -42,7 +42,6 @@ if (app.Environment.IsDevelopment())
 }
 
 var minApi = app.MapGroup("/api")
-    .AddEndpointFilter<AddApiKeyAuthFilter>()
     .WithOpenApi();
 
 minApi.MapGet("/", GetRandomMessage)
