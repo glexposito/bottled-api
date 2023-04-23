@@ -53,6 +53,7 @@ minApi.MapGet("/", GetRandomMessage)
     .Produces<MessageDto>();
 
 minApi.MapPost("/write", WriteMessage)
+    .AddEndpointFilter<ValidationFilter<MessageDto>>()
     .WithName("WriteMessage")
     .WithSummary("Write a message and dispatch into the ocean")
     .Produces(400)
@@ -89,13 +90,6 @@ static async Task<IResult> GetRandomMessage(BottledContext context)
 
 static async Task<IResult> WriteMessage(IValidator<MessageDto> validator, BottledContext context, MessageDto messageDto)
 {
-    var validationResult = await validator.ValidateAsync(messageDto);
-
-    if (!validationResult.IsValid)
-    {
-        return TypedResults.ValidationProblem(validationResult.ToDictionary());
-    }
-
     var message = await context.AddAsync(new Message()
     {
         Author = messageDto.Author,
