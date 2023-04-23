@@ -19,7 +19,6 @@ public class ApiTests : IntegrationTestBase
     [Fact]
     public async Task GetRandomMessage_WhenNoMessage_ShouldReturn_404NotFound()
     {
-        SetRequestHeader();
         var response = await Client.GetAsync("/api/");
 
         response.Should().HaveStatusCode(HttpStatusCode.NotFound);
@@ -33,7 +32,6 @@ public class ApiTests : IntegrationTestBase
         await DbContext.AddAsync(message);
         await DbContext.SaveChangesAsync();
 
-        SetRequestHeader();
         var response = await Client.GetAsync("/api/");
 
         var jsonString = await response.Content.ReadAsStringAsync();
@@ -53,7 +51,6 @@ public class ApiTests : IntegrationTestBase
             Content = "I'll be back."
         };
 
-        SetRequestHeader();
         var response = await Client.PostAsJsonAsync("/api/write", messageDto);
 
         response.Should().HaveStatusCode(HttpStatusCode.OK);
@@ -66,10 +63,5 @@ public class ApiTests : IntegrationTestBase
 
         message.Author.Should().Be(messageDto.Author);
         message.Content.Should().Be(messageDto.Content);
-    }
-
-    private void SetRequestHeader()
-    {
-        Client.DefaultRequestHeaders.Add("X-API-Key", "Hadoken");
     }
 }
