@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using Microsoft.Extensions.Hosting;
 
 namespace Bottled.Tests;
 public class AddApiKeyAuthFilterTests
@@ -18,7 +19,7 @@ public class AddApiKeyAuthFilterTests
 
         const string baseUrl = "http://localhost:3045";
 
-        _ = Task.Factory.StartNew(() => app.Run(baseUrl));
+        _ = app.RunAsync(baseUrl);
 
         using var client = new HttpClient();
         client.BaseAddress = new Uri(baseUrl);
@@ -39,7 +40,7 @@ public class AddApiKeyAuthFilterTests
 
         const string baseUrl = "http://localhost:3045";
 
-        _ = Task.Factory.StartNew(() => app.Run(baseUrl));
+        _ = app.RunAsync(baseUrl);
 
         using var client = new HttpClient();
         client.BaseAddress = new Uri(baseUrl);
@@ -61,7 +62,7 @@ public class AddApiKeyAuthFilterTests
 
         const string baseUrl = "http://localhost:3045";
 
-        _ = Task.Factory.StartNew(() => app.Run(baseUrl));
+        _ = app.RunAsync(baseUrl);
 
         using var client = new HttpClient();
         client.BaseAddress = new Uri(baseUrl);
