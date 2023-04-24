@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Bottled.Api.Infrastructure.Filters;
+namespace Bottled.Api.Filters;
 
 public class ValidationFilter<T> : IEndpointFilter where T : class
 {
