@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Bottled.Api.Infrastructure.Filters;
+using Bottled.Api.Filters;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;

@@ -1,6 +1,6 @@
 using Bottled.Api.Dtos;
+using Bottled.Api.Filters;
 using Bottled.Api.Infrastructure.Data;
-using Bottled.Api.Infrastructure.Filters;
 using Bottled.Api.Models;
 using Bottled.Api.Validators;
 using FluentValidation;
@@ -24,8 +24,11 @@ if (connectionString != null)
 }
 
 builder.Services.AddScoped<IValidator<MessageDto>, MessageDtoValidator>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -39,6 +42,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 var minApi = app.MapGroup("/api")
