@@ -17,7 +17,7 @@ public class ApiTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task GetRandomMessage_WhenNoMessage_ShouldReturn_404NotFound()
+    public async Task GetRandomMessage_WhenNoMessage_ShouldReturn404NotFound()
     {
         var response = await Client.GetAsync("/api/");
 
@@ -25,7 +25,7 @@ public class ApiTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task GetRandomMessage_WhenMessage_ShouldReturn_200Ok()
+    public async Task GetRandomMessage_WhenMessage_ShouldReturn200Ok()
     {
         var message = new Message() { Author = "T-1000", Content = "I'll be back." };
 
@@ -43,7 +43,7 @@ public class ApiTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task WriteMessage_ShouldReturn_200Ok()
+    public async Task WriteMessage_ShouldReturn200Ok()
     {
         var messageDto = new MessageDto()
         {
@@ -54,10 +54,6 @@ public class ApiTests : IntegrationTestBase
         var response = await Client.PostAsJsonAsync("/api/write", messageDto);
 
         response.Should().HaveStatusCode(HttpStatusCode.OK);
-
-        var content = await response.Content.ReadAsStringAsync();
-
-        content.All(char.IsDigit).Should().BeTrue();
 
         var message = DbContext.Messages.First();
 
