@@ -17,17 +17,8 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationRulesToSwagger();
 
-var connectionString = builder.Configuration.GetConnectionString("MySqlConnectionString");
-
-if (connectionString != null)
-{
-    builder.Services.AddDbContextPool<BottledContext>(options => options
-        .UseMySql(
-            connectionString,
-            new MySqlServerVersion(ServerVersion.AutoDetect(connectionString))
-        )
-    );
-}
+builder.Services.AddDbContext<BottledContext>(options => { options.UseInMemoryDatabase("BottledDatabase"); }
+);
 
 builder.Services.AddScoped<IValidator<MessageDto>, MessageDtoValidator>();
 builder.Services.AddProblemDetails();
@@ -35,14 +26,6 @@ builder.Services.AddProblemDetails();
 var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider
-        .GetRequiredService<BottledContext>();
-
-    dbContext.Database.Migrate();
-}
 
 if (app.Environment.IsDevelopment())
 {

@@ -20,13 +20,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-
-    - name: App Settings Variable Substitution
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: '/home/runner/work/bottled-api/bottled-api/src/Bottled.Api/appsettings.Staging.json'
-      env:
-        ConnectionStrings.MySqlConnectionString: ${{ secrets.MYSQL_CONNECTION_STRING_STAGING }}
     
     - name: Install dependencies
       run: dotnet restore
@@ -35,4 +28,4 @@ jobs:
       run: dotnet build --configuration Debug --no-restore
 
     - name: Run tests
-      run: dotnet test --environment ASPNETCORE_ENVIRONMENT=Staging --no-restore
+      run: dotnet test --no-restore
