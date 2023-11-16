@@ -17,8 +17,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationRulesToSwagger();
 
-builder.Services.AddDbContext<BottledContext>(options => { options.UseInMemoryDatabase("BottledDatabase"); }
-);
+builder.Services.AddDbContext<BottledContext>(options => { options.UseInMemoryDatabase("BottledDatabase"); });
 
 builder.Services.AddScoped<IValidator<MessageDto>, MessageDtoValidator>();
 builder.Services.AddProblemDetails();
