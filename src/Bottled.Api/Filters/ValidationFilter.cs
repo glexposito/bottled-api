@@ -2,15 +2,9 @@
 
 namespace Bottled.Api.Filters;
 
-public class ValidationFilter<T> : IEndpointFilter where T : class
+public class ValidationFilter<T>(IValidator<T> validator) : IEndpointFilter
+    where T : class
 {
-    private readonly IValidator<T> _validator;
-
-    public ValidationFilter(IValidator<T> validator)
-    {
-        _validator = validator;
-    }
-
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var contextObj = context.Arguments.SingleOrDefault(x => x?.GetType() == typeof(T));
@@ -20,7 +14,7 @@ public class ValidationFilter<T> : IEndpointFilter where T : class
             return Results.BadRequest();
         }
 
-        var validationResult = await _validator.ValidateAsync((T)contextObj);
+        var validationResult = await validator.ValidateAsync((T)contextObj);
 
         if (!validationResult.IsValid)
         {

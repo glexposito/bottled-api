@@ -8,14 +8,8 @@ using System.Net.Http.Json;
 
 namespace Bottled.Tests;
 
-public class ApiTests : IntegrationTestBase
+public class ApiTests(WebApplicationFactory<Program> factory) : IntegrationTestBase(factory), IDisposable
 {
-    public ApiTests(WebApplicationFactory<Program> factory) : base(factory)
-    {
-        DbContext.Messages.RemoveRange(DbContext.Messages);
-        DbContext.SaveChanges();
-    }
-
     [Fact]
     public async Task GetRandomMessage_WhenNoMessage_ShouldReturn404NotFound()
     {
@@ -45,11 +39,7 @@ public class ApiTests : IntegrationTestBase
     [Fact]
     public async Task WriteMessage_ShouldReturn200Ok()
     {
-        var messageDto = new MessageDto()
-        {
-            Author = "T-1000",
-            Content = "I'll be back."
-        };
+        var messageDto = new MessageDto("T-1000", "I'll be back.");
 
         var response = await Client.PostAsJsonAsync("/api/write", messageDto);
 
@@ -59,5 +49,11 @@ public class ApiTests : IntegrationTestBase
 
         message.Author.Should().Be(messageDto.Author);
         message.Content.Should().Be(messageDto.Content);
+    }
+
+    public void Dispose()
+    {
+        DbContext.Messages.RemoveRange(DbContext.Messages);
+        DbContext.SaveChanges();
     }
 }

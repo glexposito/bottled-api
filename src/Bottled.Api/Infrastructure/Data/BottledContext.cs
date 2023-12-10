@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bottled.Api.Infrastructure.Data;
 
-public class BottledContext : DbContext
+public class BottledContext(DbContextOptions<BottledContext> options) : DbContext(options)
 {
-    public BottledContext(DbContextOptions<BottledContext> options) : base(options) { }
-
     public DbSet<Message> Messages => Set<Message>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
