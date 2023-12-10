@@ -4,16 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Bottled.Tests;
 
-public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory<Program>>
+public abstract class IntegrationTestBase(WebApplicationFactory<Program> factory)
+    : IClassFixture<WebApplicationFactory<Program>>
 {
-    protected readonly HttpClient Client;
-    protected readonly BottledContext DbContext;
-
-    protected IntegrationTestBase(WebApplicationFactory<Program> factory)
-    {
-        Client = factory.CreateClient();
-
-        DbContext = factory.Services.CreateScope().ServiceProvider
-            .GetRequiredService<BottledContext>();
-    }
+    protected readonly HttpClient Client = factory.CreateClient();
+    protected readonly BottledContext DbContext = factory.Services.CreateScope().ServiceProvider
+        .GetRequiredService<BottledContext>();
 }

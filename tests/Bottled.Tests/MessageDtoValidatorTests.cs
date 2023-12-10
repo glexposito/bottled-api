@@ -5,46 +5,47 @@ using FluentValidation.TestHelper;
 namespace Bottled.Tests;
 public class MessageDtoValidatorTests
 {
-    private readonly MessageDtoValidator _validator;
-
-    public MessageDtoValidatorTests()
-    {
-        _validator = new MessageDtoValidator();
-    }
+    private readonly MessageDtoValidator _validator = new();
 
     [Fact]
     public void WhenAuthorIsNull_ShouldHaveError()
     {
-        var model = new MessageDto();
+        var model = new MessageDto(null, null);
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.Author);
+        result.ShouldHaveValidationErrorFor(x => x.Author)
+            .WithErrorCode("NotEmptyValidator");
     }
 
     [Fact]
     public void WhenAuthorExceedsMaxCharacterLimit_ShouldHaveError()
     {
-        var model = new MessageDto { Author = "Conde Alessandro Maximiliano Leonardo de la Cruz Alta" };
+        var model = new MessageDto("Conde Alessandro Leonardo de la Cruz Alta Rosa de la Manchu", null);
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.Author);
+        result.ShouldHaveValidationErrorFor(x => x.Author)
+            .WithErrorCode("MaximumLengthValidator");
     }
 
     [Fact]
     public void WhenContentIsNull_ShouldHaveError()
     {
-        var model = new MessageDto();
+        var model = new MessageDto(null, null);
         var result = _validator.TestValidate(model);
 
-        result.ShouldHaveValidationErrorFor(x => x.Content);
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorCode("NotEmptyValidator");
     }
 
     [Fact]
     public void WhenContentExceedsMaxCharacterLimit_ShouldHaveError()
     {
-        var model = new MessageDto { Content = "In Street Fighter, Ryu's fighting stance was similar to that of full-contact karate. However, Ryu was given a different stance in Street Fighter II, which was inspired by Bruce Lee's fighting stance in Enter the Dragon. Akiman made this change as he wanted Ryu to have a stance that wasn't traditional karate." };
+        // ReSharper disable once StringLiteralTypo
+        var model = new MessageDto(null,
+            "In Street Fighter, Ryu's fighting stance was similar to that of full-contact karate. However, Ryu was given a different stance in Street Fighter II, which was inspired by Bruce Lee's fighting stance in Enter the Dragon. Akiman made this change as he wanted Ryu to have a stance that wasn't traditional karate.");
         var result = _validator.TestValidate(model);
-
-        result.ShouldHaveValidationErrorFor(x => x.Content);
+        
+        result.ShouldHaveValidationErrorFor(x => x.Content)
+            .WithErrorCode("MaximumLengthValidator");
     }
 }

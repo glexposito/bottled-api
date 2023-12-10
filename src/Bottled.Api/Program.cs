@@ -41,7 +41,6 @@ var minApi = app.MapGroup("/api")
 minApi.MapGet("/", GetRandomMessage)
     .WithName("GetRandomMessage")
     .WithSummary("Break a bottle and read the message")
-    .Produces(401)
     .Produces(404)
     .Produces<MessageDto>();
 
@@ -50,7 +49,6 @@ minApi.MapPost("/write", WriteMessage)
     .WithName("WriteMessage")
     .WithSummary("Write a message and dispatch it into the ocean")
     .Produces(400)
-    .Produces(401)
     .Produces(200);
 
 app.Run();
@@ -72,11 +70,7 @@ static async Task<IResult> GetRandomMessage(BottledContext context)
         return TypedResults.NotFound();
     }
 
-    var messageDto = new MessageDto()
-    {
-        Author = randomMessage.Author,
-        Content = randomMessage.Content
-    };
+    var messageDto = new MessageDto(randomMessage.Author, randomMessage.Content);
 
     return TypedResults.Ok(messageDto);
 }
@@ -97,6 +91,4 @@ static async Task<IResult> WriteMessage(IValidator<MessageDto> validator, Bottle
     return TypedResults.Ok();
 }
 
-public abstract partial class Program
-{
-}
+public abstract partial class Program;
